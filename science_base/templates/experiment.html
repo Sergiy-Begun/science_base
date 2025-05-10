@@ -1,0 +1,640 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+     <li class="management_elem"><a href="{% url 'science_logout' %}">Logout</a></li>
+     <li class="management_elem"><a href="{% url 'science_base' %}">Home Page</a></li>
+     
+     <p class="science1"> 
+            {{ Graph.name }}
+     </p>
+     
+     <p class="science2"> 
+            {{ Graph.descr }}
+    {% if not Graph.parametrization %}        
+        <br> <br>
+            Total risk of {{Graph.name}} = {{Graph.res}};
+            <br>
+            Total risk uncertainty of {{Graph.name}} = {{Graph.uncertain}};
+            <br>
+            
+    {% else %}
+            
+            <br> <br>
+            Probability Distribution type for the Graph {{Graph.name}} = {{Graph.dist_typ}};
+            <br>
+            The first parameter value of the probability distribution = {{Graph.dist_par1}};
+            <br>
+            The second parameter value = {{Graph.dist_par2}};
+            <br>
+        
+    {% endif %}    
+            
+            <br> <br>
+            Simple Chains Contributions of {{Graph.name}}:
+            <br>
+            
+            {% for r_graph in res_graph %}
+              
+                <br>
+                The simple chain {{r_graph}};
+                <br>
+              
+            {% endfor %}
+            
+            
+     </p>
+    
+     {% for X_Vertice in X_Vertice_list %}
+      <form id="{{Graph.name}}" method="post" action="{% url 'science_experiment' %}">
+          {% csrf_token %}
+     
+     <ul>
+        
+    {% if X_Vertice.check_visualization %}
+        
+        {% if not X_Vertice.contained_FT_Graph %}
+              
+            <li class="science1" style="position: absolute; top: {{X_Vertice.graph_ycoord}}px; left: {{X_Vertice.graph_xcoord}}px;"> 
+                {{X_Vertice.name}}
+        
+            <br>
+       
+                {% if X_Vertice.included_in_calculation %}
+        
+                    <label for="vertice_ {{X_Vertice.name}} _calcul"> vertice {{X_Vertice.name}} is included in calculations:</label>
+                    
+                    <input form="{{Graph.name}}" style="visibility: visible" type="checkbox" value="vertice_{{X_Vertice.name}}_is_checked" name="vertice_{{X_Vertice.name}}_calcul" checked>
+            
+                {% else %}
+            
+                    <label for="vertice_ {{X_Vertice.name}} _calcul">vertice {{X_Vertice.name}} is exluded from calculations:</label>
+                    
+                    <input form="{{Graph.name}}" style="visibility: visible" type="checkbox" value="vertice_{{X_Vertice.name}}_is_checked" name="vertice_{{X_Vertice.name}}_calcul">
+            
+                {% endif %}
+        
+            </li>
+        
+        {% else %}
+        
+                <li class="scienceFTV" style="position: absolute; top: {{X_Vertice.graph_ycoord}}px; left: {{X_Vertice.graph_xcoord}}px;"> 
+                
+                <a href="/science/experiment/{{X_Vertice.connected_FT_Graph_name}}/" target="_blank">
+                
+                {{X_Vertice.name}} is connected to the FT Graph named {{X_Vertice.connected_FT_Graph_name}}
+            
+                </a>
+            <br>
+       
+        
+        
+                {% if X_Vertice.included_in_calculation %}
+                    
+                    <a href="/science/experiment/{{X_Vertice.connected_FT_Graph_name}}/" target="_blank">
+        
+                    <label for="vertice_ {{X_Vertice.name}} _calcul"> vertice {{X_Vertice.name}} is included in calculations:</label>
+                    </a>
+                    <input form="{{Graph.name}}" style="visibility: visible" type="checkbox" value="vertice_{{X_Vertice.name}}_is_checked" name="vertice_{{X_Vertice.name}}_calcul" checked>
+            
+                {% else %}
+                    <a href="/science/experiment/{{X_Vertice.connected_FT_Graph_name}}/" target="_blank">
+                    <label for="vertice_ {{X_Vertice.name}} _calcul">vertice {{X_Vertice.name}} is exluded from calculations:</label>
+                    </a>
+                    
+                    <input form="{{Graph.name}}" style="visibility: visible" type="checkbox" value="vertice_{{X_Vertice.name}}_is_checked" name="vertice_{{X_Vertice.name}}_calcul">
+            
+                {% endif %}
+        
+            </li>
+                
+        {% endif %}
+        
+       {% endif %}
+        
+    
+        {% if not X_Vertice.check_visualization %}
+        
+        {% if not X_Vertice.contained_FT_Graph %}
+              
+            <li class="science1" style="position: absolute; top: {{X_Vertice.graph_ycoord}}px; left: {{X_Vertice.graph_xcoord}}px;"> 
+                {{X_Vertice.name}}
+        
+            <br>
+       
+                {% if X_Vertice.included_in_calculation %}
+        
+                    <label for="vertice_ {{X_Vertice.name}} _calcul"> vertice {{X_Vertice.name}} is included in calculations</label>
+                    <input form="{{Graph.name}}" style="visibility: hidden" type="checkbox" value="vertice_{{X_Vertice.name}}_is_checked" name="vertice_{{X_Vertice.name}}_calcul" checked>
+            
+                {% else %}
+            
+                    <label for="vertice_ {{X_Vertice.name}} _calcul">vertice {{X_Vertice.name}} is exluded from calculations</label>          
+                    <input form="{{Graph.name}}" style="visibility: hidden" type="checkbox" value="vertice_{{X_Vertice.name}}_is_checked" name="vertice_{{X_Vertice.name}}_calcul">
+            
+                {% endif %}
+        
+            </li>
+        
+        {% else %}
+        
+                <li class="scienceFTV" style="position: absolute; top: {{X_Vertice.graph_ycoord}}px; left: {{X_Vertice.graph_xcoord}}px;"> 
+                
+                <a href="/science/experiment/{{X_Vertice.connected_FT_Graph_name}}/" target="_blank">
+                
+                {{X_Vertice.name}} is connected to the FT Graph named {{X_Vertice.connected_FT_Graph_name}}
+            
+                </a>
+            <br>
+       
+        
+        
+                {% if X_Vertice.included_in_calculation %}
+                    
+                    <a href="/science/experiment/{{X_Vertice.connected_FT_Graph_name}}/" target="_blank">
+        
+                    <label for="vertice_ {{X_Vertice.name}} _calcul"> vertice {{X_Vertice.name}} is included in calculations</label>
+                    </a>
+                    <input form="{{Graph.name}}" style="visibility: hidden" type="checkbox" value="vertice_{{X_Vertice.name}}_is_checked" name="vertice_{{X_Vertice.name}}_calcul" checked>
+            
+                {% else %}
+                    <a href="/science/experiment/{{X_Vertice.connected_FT_Graph_name}}/" target="_blank">
+                    <label for="vertice_ {{X_Vertice.name}} _calcul">vertice {{X_Vertice.name}} is exluded from calculations</label>
+                    </a>
+                    
+                    <input form="{{Graph.name}}" style="visibility: hidden" type="checkbox" value="vertice_{{X_Vertice.name}}_is_checked" name="vertice_{{X_Vertice.name}}_calcul">
+            
+                {% endif %}
+        
+            </li>
+                
+            {% endif %}
+        
+       {% endif %}
+        
+        
+     {% endfor %}
+
+
+    
+    {% for U_chain in U_chain_list %}
+    
+        {% if U_chain.res_taken_from_FT %}
+        
+                {% if not U_chain.parametrization %}
+    
+                    {% if U_chain.check_visualization %}
+        
+                        <li class="scienceFTR" style="visibility: visible; position: absolute; top: {{U_chain.text_ycoord}}px; left: {{U_chain.text_xcoord}}px;">
+                    
+                            <label>
+                                <a href="/science/experiment/{{U_chain.res_taken_from_FT_name}}/" target="_blank">
+                                    Probab. param. for the {{U_chain.name}} event taken from the FT Graph named {{U_chain.res_taken_from_FT_name}}:
+                                </a>
+                            </label>
+                            <br>
+                            <div class="management_elem"> {{U_chain.weight}}; </div>
+               
+                            <br>
+                        
+                            <label>
+                                Uncertainty of the probab. parameter:
+                            </label>
+                            <br>
+                            <div class="management_elem"> {{U_chain.weight_uncertain}}. </div>
+                            
+    
+                        </li>
+                
+                    {% else %}
+                
+                        <li class="scienceFTR" style="visibility: hidden; position: absolute; top: {{U_chain.text_ycoord}}px; left: {{U_chain.text_xcoord}}px;">
+                
+                            <label>
+                                <a href="/science/experiment/{{U_chain.res_taken_from_FT_name}}/" target="_blank">
+                                    Probab. param. for the {{U_chain.name}} event taken from the FT Graph named {{U_chain.res_taken_from_FT_name}}:
+                                </a>
+                            </label>
+                            <br>
+                            <div class="management_elem"> {{U_chain.weight}}; </div>
+                
+                            <br>
+                        
+                            <label>
+                                Uncertainty of the probab. parameter:
+                            </label>
+                            <br>
+                            <div class="management_elem"> {{U_chain.weight_uncertain}}. </div>
+                            
+    
+                        </li>
+        
+                    {% endif %}
+    
+                {% else %}
+            
+                    {% if U_chain.check_visualization %}
+        
+                        <li class="scienceFTR" style="visibility: visible; position: absolute; top: {{U_chain.text_ycoord}}px; left: {{U_chain.text_xcoord}}px;">
+                
+                            <label>
+                                <a href="/science/experiment/{{U_chain.res_taken_from_FT_name}}/" target="_blank">
+                                    Probab. param. for the {{U_chain.name}} event taken from the FT Graph named {{U_chain.res_taken_from_FT_name}}:
+                                </a>
+                            </label>
+                            <br>
+                            <div class="management_elem"> {{U_chain.dist_typ}}; </div>
+                        
+                            <br>
+                        
+                            <label>
+                                Probab. param. No.1:
+                            </label>
+                            <br>
+                            <div class="management_elem"> {{U_chain.dist_par1}}; </div>
+               
+                            <br>
+                        
+                            <label>
+                                Probab. param. No.2:
+                            </label>
+                            <br>
+                            <div class="management_elem"> {{U_chain.dist_par2}}. </div>
+                            
+    
+                        </li>
+                
+                    {% else %}
+                
+                        <li class="scienceFTR" style="visibility: hidden; position: absolute; top: {{U_chain.text_ycoord}}px; left: {{U_chain.text_xcoord}}px;">
+                
+                            <label>
+                                <a href="/science/experiment/{{U_chain.res_taken_from_FT_name}}/" target="_blank">
+                                    Probab. param. for the {{U_chain.name}} event taken from the FT Graph named {{U_chain.res_taken_from_FT_name}}:
+                                </a>
+                            </label>
+                            <br>
+                            <div class="management_elem"> {{U_chain.dist_typ}}; </div>
+                        
+                            <br>
+                        
+                            <label>
+                                Probab. param. No.1:
+                            </label>
+                            <br>
+                            <div class="management_elem"> {{U_chain.dist_par1}}; </div>
+               
+                            <br>
+                        
+                            <label>
+                                Probab. param. No.2:
+                            </label>
+                            <br>
+                            <div class="management_elem"> {{U_chain.dist_par2}}. </div>
+                            
+    
+                        </li>
+        
+                    {% endif %}            
+            
+                {% endif %}        
+        
+        {% else %}
+    
+            {% if not U_chain.should_be_calculated_sign %}
+    
+                {% if not U_chain.parametrization %}
+    
+                    {% if U_chain.check_visualization %}
+        
+                        <li class="science3" style="visibility: visible; position: absolute; top: {{U_chain.text_ycoord}}px; left: {{U_chain.text_xcoord}}px;">
+                    
+                            <label for="chain_{{U_chain.name}}_calcul">
+                            Probab. param. for the {{U_chain.name}} event:
+                            </label>
+                            <br>
+                            <input form="{{Graph.name}}" class="management_elem" type="number" min="0.0" max="1.0" step="0.0000000001" name="chain_{{U_chain.name}}_calcul" value="{{U_chain.weight}}">
+               
+                            ;<br>
+                        
+                            <label for="chain_{{U_chain.name}}_uncert_calcul">
+                                Uncertainty of the probab. parameter:
+                            </label>
+                            <br>
+                            <input form="{{Graph.name}}" class="management_elem" type="number" min="0.0" max="1.0" step="0.0000000001" name="chain_{{U_chain.name}}_uncert_calcul" value="{{U_chain.weight_uncertain}}">
+                            .
+    
+                        </li>
+                
+                    {% else %}
+                
+                        <li class="science3" style="visibility: hidden; position: absolute; top: {{U_chain.text_ycoord}}px; left: {{U_chain.text_xcoord}}px;">
+                
+                            <label for="chain_{{U_chain.name}}_calcul">
+                                Probab. param. for the {{U_chain.name}} event:
+                            </label>
+                            <br>
+                            <input form="{{Graph.name}}" class="management_elem" type="number" min="0.0" max="1.0" step="0.0000000001" name="chain_{{U_chain.name}}_calcul" value="{{U_chain.weight}}">
+                
+                            ;<br>
+                        
+                            <label for="chain_{{U_chain.name}}_uncert_calcul">
+                                Uncertainty of the probab. parameter:
+                            </label>
+                            <br>
+                            <input form="{{Graph.name}}" class="management_elem" type="number" min="0.0" max="1.0" step="0.0000000001" name="chain_{{U_chain.name}}_uncert_calcul" value="{{U_chain.weight_uncertain}}">
+                            .
+    
+                        </li>
+        
+                    {% endif %}
+    
+                {% else %}
+            
+                    {% if U_chain.check_visualization %}
+        
+                        <li class="science3" style="visibility: visible; position: absolute; top: {{U_chain.text_ycoord}}px; left: {{U_chain.text_xcoord}}px;">
+                
+                            <label for="probability_distr_type_for_chain_{{U_chain.name}}">
+                                Probab. distr. type for the {{U_chain.name}} event:
+                            </label>
+                        
+                            <select class="management_elem" size="1" form="{{Graph.name}}" name="probability_distr_type_for_chain_{{U_chain.name}}" >
+                            
+                                {% if U_chain.dist_typ == "Normal" %}
+                                    <option selected value="Normal">Normal</option>
+                                {% else %}
+                                    <option value="Normal">Normal</option>
+                                {% endif %}   
+                            
+                                {% if U_chain.dist_typ == "LogNormal" %} 
+                                    <option selected value="LogNormal">LogNormal</option>
+                                {% else %}
+                                    <option value="LogNormal">LogNormal</option>
+                                {% endif %}
+                            
+                                {% if U_chain.dist_typ == "Beta" %}
+                                    <option selected value="Beta">Beta</option>
+                                {% else %}
+                                    <option value="Beta">Beta</option>
+                                {% endif %}
+                            
+                                {% if U_chain.dist_typ == "Gamma" %}
+                                    <option selected value="Gamma"> Gamma </option>
+                                {% else %}
+                                    <option value="Gamma">Gamma</option>
+                                {% endif %}
+                            
+                                {% if U_chain.dist_typ == "Uniform" %}
+                                    <option selected value="Uniform">Uniform</option>
+                                {% else %}
+                                    <option value="Uniform">Uniform</option>
+                                {% endif %}
+                            
+                            </select>
+                        
+                            ;<br>
+                        
+                            <label for="chain_{{U_chain.name}}_probab_1_calcul">
+                                Probab. param. No.1:
+                            </label>
+                            <br>
+                            <input form="{{Graph.name}}" class="management_elem" type="number" min="0.0000001" max="10000000.0" step="0.0000001" name="chain_{{U_chain.name}}_probab_1_calcul" value="{{U_chain.dist_par1}}">
+               
+                            ;<br>
+                        
+                            <label for="chain_{{U_chain.name}}_probab_2_calcul">
+                                Probab. param. No.2:
+                            </label>
+                            <br>
+                            <input form="{{Graph.name}}" class="management_elem" type="number" min="0.0000001" max="10000000.0" step="0.0000001" name="chain_{{U_chain.name}}_probab_2_calcul" value="{{U_chain.dist_par2}}">
+                            .
+    
+                        </li>
+                
+                    {% else %}
+                
+                        <li class="science3" style="visibility: hidden; position: absolute; top: {{U_chain.text_ycoord}}px; left: {{U_chain.text_xcoord}}px;">
+                
+                            <label for="probability_distr_type_for_chain_{{U_chain.name}}">
+                                Probab. distr. type for the {{U_chain.name}} event:
+                            </label>
+                        
+                            <select class="management_elem" size="1" form="{{Graph.name}}" name="probability_distr_type_for_chain_{{U_chain.name}}"  selected value="{{U_chain.dist_typ}}">
+                            
+                                {% if U_chain.dist_typ == "Normal" %}
+                                    <option selected value="Normal">Normal</option>
+                                {% else %}
+                                    <option value="Normal">Normal</option>
+                                {% endif %}   
+                            
+                                {% if U_chain.dist_typ == "LogNormal" %} 
+                                    <option selected value="LogNormal">LogNormal</option>
+                                {% else %}
+                                    <option value="LogNormal">LogNormal</option>
+                                {% endif %}
+                            
+                                {% if U_chain.dist_typ == "Beta" %}
+                                    <option selected value="Beta">Beta</option>
+                                {% else %}
+                                    <option value="Beta">Beta</option>
+                                {% endif %}
+                            
+                                {% if U_chain.dist_typ == "Gamma" %}
+                                    <option selected value="Gamma"> Gamma </option>
+                                {% else %}
+                                    <option value="Gamma">Gamma</option>
+                                {% endif %}
+                            
+                                {% if U_chain.dist_typ == "Uniform" %}
+                                    <option selected value="Uniform">Uniform</option>
+                                {% else %}
+                                    <option value="Uniform">Uniform</option>
+                                {% endif %}
+                            
+                            </select>
+                        
+                            ;<br>
+                        
+                            <label for="chain_{{U_chain.name}}_probab_1_calcul">
+                                Probab. param. No.1:
+                            </label>
+                            <br>
+                            <input form="{{Graph.name}}" class="management_elem" type="number" min="0.0000001" max="10000000.0" step="0.0000001" name="chain_{{U_chain.name}}_probab_1_calcul" value="{{U_chain.dist_par1}}">
+               
+                            ;<br>
+                        
+                            <label for="chain_{{U_chain.name}}_probab_2_calcul">
+                                Probab. param. No.2:
+                            </label>
+                            <br>
+                            <input form="{{Graph.name}}" class="management_elem" type="number" min="0.0000001" max="10000000.0" step="0.0000001" name="chain_{{U_chain.name}}_probab_2_calcul" value="{{U_chain.dist_par2}}">
+                            .
+    
+                        </li>
+        
+                    {% endif %}            
+            
+                {% endif %}
+            
+            {% else %}
+    
+                {% if not U_chain.parametrization %}
+    
+                    {% if U_chain.check_visualization %}
+        
+                        <li class="science4" style="visibility: visible; position: absolute; top: {{U_chain.text_ycoord}}px; left: {{U_chain.text_xcoord}}px;">
+                
+                            <label>
+                                Probab. param. for the {{U_chain.name}} event:
+                            </label>
+                            <br>
+                            <div class="management_elem"> {{U_chain.weight}}; </div>
+               
+                            <br>
+                        
+                            <label>
+                                Uncertainty of the probab. parameter:
+                            </label>
+                            <br>
+                            <div class="management_elem"> {{U_chain.weight_uncertain}}. </div>
+                            
+    
+                        </li>
+                
+                    {% else %}
+                
+                        <li class="science4" style="visibility: hidden; position: absolute; top: {{U_chain.text_ycoord}}px; left: {{U_chain.text_xcoord}}px;">
+                
+                            <label>
+                                Probab. param. for the {{U_chain.name}} event:
+                            </label>
+                            <br>
+                            <div class="management_elem"> {{U_chain.weight}}; </div>
+                
+                            <br>
+                        
+                            <label>
+                                Uncertainty of the probab. parameter:
+                            </label>
+                            <br>
+                            <div class="management_elem"> {{U_chain.weight_uncertain}}. </div>
+                            
+    
+                        </li>
+        
+                    {% endif %}
+    
+                {% else %}
+            
+                    {% if U_chain.check_visualization %}
+        
+                        <li class="science4" style="visibility: visible; position: absolute; top: {{U_chain.text_ycoord}}px; left: {{U_chain.text_xcoord}}px;">
+                
+                            <label>
+                                Probab. distr. type for the {{U_chain.name}} event:
+                            </label>
+                            <br>
+                            <div class="management_elem"> {{U_chain.dist_typ}}; </div>
+                        
+                            <br>
+                        
+                            <label>
+                                Probab. param. No.1:
+                            </label>
+                            <br>
+                            <div class="management_elem"> {{U_chain.dist_par1}}; </div>
+               
+                            <br>
+                        
+                            <label>
+                                Probab. param. No.2:
+                            </label>
+                            <br>
+                            <div class="management_elem"> {{U_chain.dist_par2}}. </div>
+                            
+    
+                        </li>
+                
+                    {% else %}
+                
+                        <li class="science4" style="visibility: hidden; position: absolute; top: {{U_chain.text_ycoord}}px; left: {{U_chain.text_xcoord}}px;">
+                
+                            <label>
+                                Probab. distr. type for the {{U_chain.name}} event:
+                            </label>
+                            <br>
+                            <div class="management_elem"> {{U_chain.dist_typ}}; </div>
+                        
+                            <br>
+                        
+                            <label>
+                                Probab. param. No.1:
+                            </label>
+                            <br>
+                            <div class="management_elem"> {{U_chain.dist_par1}}; </div>
+               
+                            <br>
+                        
+                            <label>
+                                Probab. param. No.2:
+                            </label>
+                            <br>
+                            <div class="management_elem"> {{U_chain.dist_par2}}. </div>
+                            
+    
+                        </li>
+        
+                    {% endif %}            
+            
+                {% endif %}            
+
+            {% endif %}
+            
+        {% endif %}
+    
+    {% endfor %}
+    
+    </ul>
+    
+    
+    <?xml version="1.0"?>
+    <svg style="position: absolute; top: 1px; left: 1px;" xmlns="http://www.w3.org/2000/svg" version="1.2" baseProfile="tiny"
+    width="{{Graph.max_x_coord}}" height="{{Graph.max_y_coord}}">
+    
+    {% for U_chain in U_chain_list %}
+        
+        {% if U_chain.check_visualization %}
+        
+            <g fill="none" stroke="{{U_chain.chain_color}}" stroke-width="3" stroke-opacity="1">
+    
+                <line x1="{{U_chain.from_xcoord}}" y1="{{U_chain.from_ycoord}}" x2="{{U_chain.to_xcoord}}" y2="{{U_chain.to_ycoord}}"/>
+    
+    
+            </g>
+            
+        {% else %}
+            
+            <g fill="none" stroke="{{U_chain.chain_color}}" stroke-width="3" stroke-opacity="0">
+    
+                <line x1="{{U_chain.from_xcoord}}" y1="{{U_chain.from_ycoord}}" x2="{{U_chain.to_xcoord}}" y2="{{U_chain.to_ycoord}}"/>
+           
+            </g>
+        {% endif %}
+    
+    {% endfor %}
+    
+   
+    </svg>
+    
+    
+    <input form="{{Graph.name}}" class="management_elem" type="submit" value="Refresh / Recalculate">
+    
+    </form>
+ 
+ <p> q1 = {{q1}} </p>
+ <p> q2 = {{q2}} </p>
+ <p> q3 = {{q3}} </p>
+ <p> q4 = {{q4}} </p>
+     
+{% endblock %}
